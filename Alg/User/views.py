@@ -69,16 +69,6 @@ class LoginView(TokenObtainPairView):  # 登录视图
         return Response(result, status=status.HTTP_200_OK)
 
 
-class UserAvatarUploadAPIView(APIView):
-    parser_classes = [FileUploadParser]
-
-    def post(self, request, format=None):
-        avatar_file = request.FILES["avatar"]
-        file_name = "avatars/" + avatar_file.name  # 保存到 COS 指定文件夹下
-        request.user.avatar.save(file_name, avatar_file)
-
-        return Response({"message": "头像上传成功"})
-
 
 class UserView(GenericViewSet, RetrieveModelMixin):  # 获取用户信息
     queryset = User.objects.all()
@@ -114,13 +104,13 @@ class UserView(GenericViewSet, RetrieveModelMixin):  # 获取用户信息
                     {"message": "上传失败！"}, status=status.HTTP_400_BAD_REQUEST
                 )
 
-def avatar_get(self, request, *args, **kwargs):  # 获取用户头像
-    user = self.get_object()
-    avatar_url = get_avatar(user)  # 获取头像地址
-    if not avatar_url:
-        return Response({"error": "用户没有上传头像"}, status=status.HTTP_404_NOT_FOUND)
-    else:
-        return Response({"avatar_url": avatar_url}, status=status.HTTP_200_OK)
+    def avatar_get(self, request, *args, **kwargs):  # 获取用户头像
+        user = self.get_object()
+        avatar_url = get_avatar(user)  # 获取头像地址
+        if not avatar_url:
+            return Response({"error": "用户没有上传头像"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"avatar_url": avatar_url}, status=status.HTTP_200_OK)
 
 
 

@@ -114,14 +114,14 @@ class UserView(GenericViewSet, RetrieveModelMixin):  # 获取用户信息
                     {"message": "上传失败！"}, status=status.HTTP_400_BAD_REQUEST
                 )
 
-    # def get_avatars(self, request, *args, **kwargs):  # 获取用户头像
-    #     user = self.get_object()
-    #     avatar = get_avatar(user)
-    #     return
-    #     if not avatar:
-    #         return Response({"error": "用户没有上传头像"}, status=status.HTTP_404_NOT_FOUND)
-    #     else:
-    #         file_prefix = "{}".format(user.username) + "_avatar"  # 获取文件前缀
+def avatar_get(self, request, *args, **kwargs):  # 获取用户头像
+    user = self.get_object()
+    avatar_url = get_avatar(user)  # 获取头像地址
+    if not avatar_url:
+        return Response({"error": "用户没有上传头像"}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response({"avatar_url": avatar_url}, status=status.HTTP_200_OK)
+
 
 
 

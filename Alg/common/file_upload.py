@@ -7,8 +7,8 @@ region = "ap-chengdu"  # 替换为用户的 Region
 config = CosConfig(Region=region, SecretId=secret_id, SecretKey=secret_key)
 client = CosS3Client(config)
 
-
-def upload_obj_avatar(user, file_obj):  # 上传文件对象
+ # 上传文件对象
+def upload_obj_avatar(user, file_obj): 
     filetype = file_obj.name.rsplit(".")[-1]  # 获取文件后缀
     response = client.upload_file_from_buffer(
         Bucket="algserver-md-img-1252510405",
@@ -19,51 +19,26 @@ def upload_obj_avatar(user, file_obj):  # 上传文件对象
 
 road = "user_avatar/"  # 文件夹的路径
 
-
+#获取用户头像URL
 def get_avatar(user):
     file_key = "user_avatar/"
     response = client.list_objects(
         Bucket="algserver-md-img-1252510405", Prefix="user_avatar"
     )
     for content in response["Contents"]:
-        print(content)
-        file_name = content["Key"].split("/")[-1]  # 获取文件名部分（带文件后缀）
-        file_name_without_extension = file_name.split(".")[0]  # 去除文件后缀，获取纯文件名
-        # if file_name_without_extension == user.username:
-        #     return content
+        user_avatar = content["Key"].split("/")[-1].split(".")[0]  # 去除文件后缀，获取纯文件名
+        avatar_name = "{}_avatar".format(user.username)
+        if user_avatar == avatar_name:
+            avatar_url = (
+                "https://algserver-md-img-1252510405.cos.ap-chengdu.myqcloud.com/"
+                + content["Key"]
+            )
+            return avatar_url
 
 
-class cencloud:
-    def __init__(self, secret_id, secret_key, region):
-        self.config = CosConfig(Region=region, SecretId=secret_id, SecretKey=secret_key)
-        self.client = CosS3Client(self.config)
-
-    # --------------------上传文件的方法--------------
-
-    def upload(self):
-        response = self.client.upload_file(
-            Bucket="algserver-md-img-1252510405",
-            LocalFilePath=r"day16\app01\static\js\echarts.js",  # 本地文件的路径
-            # "r"前缀用于定义一个原始字符串，其中的反斜杠不需要进行额外的转义
-            Key="{}".format("username"),  # 上传到桶之后的文件名
-        )
-        print(response["ETag"])
-
-    def upload_obj(self, img_obj):  # 上传文件对象
-        response = self.client.upload_file_from_buffer(
-            Bucket="algserver-md-img-1252510405",
-            Body=img_obj,  # 需要上传的文件对象
-            Key="p1.png",  # 上传到桶之后的文件名
-        )
-
-    # --------------创建存储桶的方法--------------
-
-    def create_buc(self):
-        response = self.client.create_bucket(
-            Bucket="test-1251317460",  # 创建桶名称
-            ACL="public-read",  # private  /  public-read / public-read-write
-        )
-
-
-if __name__ == "__main__":
-    get_avatar(1)
+#创建新的存储桶
+def create_buc():
+    response = client.create_bucket(
+        Bucket="test-1251317460",  # 创建桶名称
+        ACL="public-read",  # private  /  public-read / public-read-write
+    )

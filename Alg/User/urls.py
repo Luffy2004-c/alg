@@ -21,5 +21,5 @@ urlpatterns = [
     # 用户上传头像
     path("<int:pk>/avatar/upload/", UserView.as_view({"post": "upload_avatar"})),
     # 获取用户头像
-    path("<int:pk>/avatar/get/", UserView.as_view({"get": "get_avatars"})),
+    path("<int:pk>/avatar/get/", UserView.as_view({"get": "avatar_get"})),
 ]

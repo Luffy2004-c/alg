@@ -124,22 +124,4 @@ class UserView(GenericViewSet, RetrieveModelMixin):  # 获取用户信息
     #         file_prefix = "{}".format(user.username) + "_avatar"  # 获取文件前缀
 
 
-import markdown
 
-# Create your views here.
-
-
-class makedowntxt(APIView):
-    # parser_classes = (MultiPartParser,FormParser)
-    def post(self, request):
-        markdown_file = request.FILES.get("file")
-        if not markdown_file:
-            return Response({"error": "no file uploaded"})
-        content = markdown_file.read().decode()
-        # 返回格式化md文本（html）
-        # md_code = markdown.markdown(content)
-        # print(md_code)
-        # return Response({"code":md_code})
-        # 返回md代码
-        print(content)
-        return Response({"code": content})
